@@ -78,12 +78,12 @@ void BuildMap(char mode) {
 		Subways::iterator h = beg;
 		int last = beg++->second;
 		while (beg != end) {
-			AddEdge(last, beg->second, 1, lines[ll] != "»ú³¡Ïß");
+			AddEdge(last, beg->second, 1, lines[ll] != "æœºåœºçº¿");
 			last = beg->second;
 			beg++;
 		}
 		if (isCir[ll]) AddEdge(last, h->second, 1, 1);
-		if (lines[ll] == "»ú³¡Ïß") {
+		if (lines[ll] == "æœºåœºçº¿") {
 			last = h++->second;
 			AddEdge(h->second, last, 1, 0);
 			last = h++->second;
@@ -161,7 +161,7 @@ void Search(string src, string dst) {
 		if (i > 1) {
 			string l = sta[ways[i]].lname;
 			while (i > 1 && sta[ways[i]].sname == sta[ways[i - 1]].sname) i--;
-			if (l != sta[ways[i]].lname)cout << "»»³Ë" << sta[ways[i]].lname;
+			if (l != sta[ways[i]].lname)cout << "æ¢ä¹˜" << sta[ways[i]].lname;
 		}
 		cout << endl;
 	}
@@ -204,4 +204,4 @@ int main(int argc, const char *argv[]) {
 	else
 		cout << "Unknown command!\n";
 	return 0;
-}
+} 
