@@ -43,7 +43,6 @@ int Init() {
 	fin.open("beijing-subway.txt");
 	if (fin.is_open()) {
 		while (fin >> now) {
-			//			cout << now << endl;
 			if (now == "L" || now == "C") {
 				linenum++;
 				fin >> lines[linenum];
@@ -64,9 +63,11 @@ int Init() {
 	return 0;
 }
 
-void AddEdge(int a, int b, int w) {
+void AddEdge(int a, int b, int w, bool d) {
 	edge[++tp].go = b;edge[tp].dis = w;edge[tp].next = head[a];head[a] = tp;
-	edge[++tp].go = a;edge[tp].dis = w;edge[tp].next = head[b];head[b] = tp;
+	if (d) {
+		edge[++tp].go = a;edge[tp].dis = w;edge[tp].next = head[b];head[b] = tp;
+	}
 }
 
 void BuildMap(char mode) {
@@ -74,14 +75,20 @@ void BuildMap(char mode) {
 	for (int ll = 1; ll <= linenum; ll++) {
 		Subways::iterator beg = subways.lower_bound(lines[ll]);
 		Subways::iterator end = subways.upper_bound(lines[ll]);
-		int h = beg->second;
+		Subways::iterator h = beg;
 		int last = beg++->second;
 		while (beg != end) {
-			AddEdge(last, beg->second, 1);
+			AddEdge(last, beg->second, 1, lines[ll] != "机场线");
 			last = beg->second;
 			beg++;
 		}
-		if (isCir[ll]) AddEdge(last, h, 1);
+		if (isCir[ll]) AddEdge(last, h->second, 1, 1);
+		if (lines[ll] == "机场线") {
+			last = h++->second;
+			AddEdge(h->second, last, 1, 0);
+			last = h++->second;
+			AddEdge(++h->second, last, 1, 0);
+		}
 	}
 	// for transfer stations
 	for (int i = 0; i <= stanum; i++)statemp[i] = sta[i];
@@ -91,7 +98,7 @@ void BuildMap(char mode) {
 			for (int j = i + 1; j <= stanum; j++) {
 				if (statemp[i].sname != statemp[j].sname)
 					break;
-				AddEdge(statemp[i].id, statemp[j].id, 0);
+				AddEdge(statemp[i].id, statemp[j].id, 0, 1);
 			}
 		}
 	}
@@ -100,13 +107,17 @@ void BuildMap(char mode) {
 			for (int j = i + 1; j <= stanum; j++) {
 				if (statemp[i].sname != statemp[j].sname)
 					break;
-				AddEdge(statemp[i].id, statemp[j].id, TRANSFERCOST);
+				AddEdge(statemp[i].id, statemp[j].id, TRANSFERCOST, 1);
 			}
 		}
 	}
 }
 
 void Search(string src, string dst) {
+	if (src == dst) {
+		cout << 0 << endl;
+		return;
+	}
 	int front = 0, end = 0;
 	for (int i = 0; i <= stanum; i++)
 		dis[i] = OO;
@@ -149,7 +160,7 @@ void Search(string src, string dst) {
 		cout << sta[ways[i]].sname;
 		if (i > 1) {
 			string l = sta[ways[i]].lname;
-			while (sta[ways[i]].sname == sta[ways[i - 1]].sname)i--;
+			while (i > 1 && sta[ways[i]].sname == sta[ways[i - 1]].sname)i--;
 			if (l != sta[ways[i]].lname)cout << "换乘" << sta[ways[i]].lname;
 		}
 		cout << endl;
@@ -192,6 +203,5 @@ int main(int argc, const char *argv[]) {
 	}
 	else
 		cout << "Unknown command!\n";
-	system("pause");
 	return 0;
 }
