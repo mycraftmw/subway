@@ -160,7 +160,7 @@ void Search(string src, string dst) {
 		cout << sta[ways[i]].sname;
 		if (i > 1) {
 			string l = sta[ways[i]].lname;
-			while (i > 1 && sta[ways[i]].sname == sta[ways[i - 1]].sname)i--;
+			while (i > 1 && sta[ways[i]].sname == sta[ways[i - 1]].sname) i--;
 			if (l != sta[ways[i]].lname)cout << "»»³Ë" << sta[ways[i]].lname;
 		}
 		cout << endl;
