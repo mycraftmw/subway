@@ -121,12 +121,18 @@ void Search(string src, string dst) {
 	int front = 0, end = 0;
 	for (int i = 0; i <= stanum; i++)
 		dis[i] = OO;
+	int havedst = 0;
 	for (int i = 1; i <= stanum; i++) {
 		if (sta[i].sname == src) {
 			use[i] = 1;
 			dis[i] = 1;
 			queue[end++] = i;
 		}
+		else if (sta[i].sname == dst) havedst++;
+	}
+	if (end == 0 || havedst == 0) {
+		cout << "Station Error!\n";
+		return;
 	}
 	for (;front < end;front++) {
 		int now = queue[front];
@@ -144,11 +150,9 @@ void Search(string src, string dst) {
 	}
 	int did = 0, mm = OO;
 	for (int i = 1; i <= stanum; i++) {
-		if (sta[i].sname == dst) {
-			if (dis[i] < mm) {
-				mm = dis[i];
-				did = i;
-			}
+		if (sta[i].sname == dst&&dis[i] < mm) {
+			mm = dis[i];
+			did = i;
 		}
 	}
 	cout << dis[did] % TRANSFERCOST << endl;
@@ -204,4 +208,4 @@ int main(int argc, const char *argv[]) {
 	else
 		cout << "Unknown command!\n";
 	return 0;
-} 
+}
